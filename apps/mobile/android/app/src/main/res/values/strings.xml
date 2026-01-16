@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">itrustcircle</string>
+    <string name="title_activity_main">itrustcircle</string>
+    <string name="package_name">com.itrustcircle.app</string>
+    <string name="custom_url_scheme">com.itrustcircle.app</string>
+</resources>

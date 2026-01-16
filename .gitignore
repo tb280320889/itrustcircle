@@ -9,7 +9,7 @@ Thumbs.db
 .claude/
 .ai/handbook.local/
 opencode.local.json
-
+.ai/handbook/
 # --- Node / JS ---
 node_modules/
 pnpm-debug.log*

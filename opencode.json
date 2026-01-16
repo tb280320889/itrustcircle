@@ -1,10 +1,10 @@
 {
-    "mcp":  {
-                "svelte":  {
-                               "url":  "https://mcp.svelte.dev/mcp",
-                               "type":  "remote",
-                               "enabled":  true
-                           }
-            },
-    "$schema":  "https://opencode.ai/config.json"
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "svelte": {
+      "enabled": true,
+      "type": "remote",
+      "url": "https://mcp.svelte.dev/mcp"
+    }
+  }
 }
