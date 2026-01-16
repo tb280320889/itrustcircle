@@ -1,0 +1,3 @@
+[submodule ".ai/ai-infra"]
+	path = .ai/ai-infra
+	url = https://github.com/tb280320889/ai-infra.git
