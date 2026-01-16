@@ -1,0 +1,53 @@
+# --- OS / Editor ---
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# --- AI / Tooling ---
+.claude/
+.ai/handbook.local/
+opencode.local.json
+
+# --- Node / JS ---
+node_modules/
+pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-store/
+.turbo/
+.cache/
+
+# --- SvelteKit / Vite ---
+.svelte-kit/
+build/
+dist/
+.vite/
+
+# --- Capacitor / Mobile ---
+# Do NOT ignore android/ or ios/ (we commit the native projects)
+# But ignore their build caches
+apps/**/android/.gradle/
+apps/**/android/build/
+apps/**/android/app/build/
+apps/**/android/local.properties
+apps/**/ios/Pods/
+apps/**/ios/build/
+apps/**/ios/DerivedData/
+apps/**/ios/*.xcworkspace/xcuserdata/
+apps/**/ios/*.xcodeproj/xcuserdata/
+
+# --- Android Studio / Gradle ---
+.gradle/
+**/.gradle/
+*.iml
+
+# --- Env / Secrets ---
+.env
+.env.*
+!.env.example
+*.keystore
+*.jks
+*.p12
