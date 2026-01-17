@@ -20,7 +20,9 @@
 		"format": "prettier --write .",
 		"lint": "prettier --check . && eslint .",
 		"test:unit": "vitest",
-		"test": "pnpm run test:unit -- --run",
+		"test": "pnpm run test:unit --run",
+		"test:server": "vitest --run --project server",
+		"test:client": "vitest --run --project client",
 		"cap:sync": "pnpm build && pnpm exec cap sync",
 		"cap:android": "pnpm cap:sync && pnpm exec cap run android",
 		"cap:open:android": "pnpm exec cap open android"

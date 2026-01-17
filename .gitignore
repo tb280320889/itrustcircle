@@ -51,3 +51,16 @@ apps/**/ios/*.xcodeproj/xcuserdata/
 *.keystore
 *.jks
 *.p12
+
+# --- Trae (IDE local state) ---
+.trae/cache/
+.trae/tmp/
+.trae/logs/
+# But preserve the BMAD rules
+!.trae/rules/
+
+# --- OpenCode tool local state ---
+.opencode/
+
+# --- BMAD runtime scratch (if generated) ---
+_bmad/

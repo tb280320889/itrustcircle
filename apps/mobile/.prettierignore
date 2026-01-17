@@ -1,9 +1,19 @@
-# Package Managers
-package-lock.json
-pnpm-lock.yaml
-yarn.lock
-bun.lock
-bun.lockb
+# --- Dependencies / caches ---
+node_modules/
+.pnpm-store/
+.cache/
 
-# Miscellaneous
-/static/
+# --- SvelteKit / Vite outputs ---
+.svelte-kit/
+build/
+dist/
+.vite/
+
+# --- Capacitor native projects (we commit them, but DO NOT format via prettier) ---
+android/
+ios/
+
+# --- Test outputs ---
+playwright-report/
+test-results/
+coverage/
