@@ -1,10 +1,10 @@
 {
-  "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "svelte": {
-      "enabled": true,
       "type": "remote",
-      "url": "https://mcp.svelte.dev/mcp"
+      "url": "https://mcp.svelte.dev/mcp",
+      "enabled": true
     }
-  }
+  },
+  "$schema": "https://opencode.ai/config.json"
 }
