@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@capacitor/core': 7.4.4
+  '@capacitor/cli': 7.4.4
+  '@capacitor/android': 7.4.4
+
 importers:
   .:
     dependencies:
@@ -103,7 +108,7 @@ packages:
         integrity: sha512-y8knfV1JXNrd6XZZLZireGT+EBCN0lvOo+HZ/s7L8LkrPBu4nY5UZn0Wxz4yOezItEII9rqYJSHsS5fMJG9gdw==
       }
     peerDependencies:
-      '@capacitor/core': ^7.4.0
+      '@capacitor/core': 7.4.4
 
   '@capacitor/cli@7.4.4':
     resolution:

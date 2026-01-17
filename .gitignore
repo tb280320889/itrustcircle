@@ -57,7 +57,7 @@ apps/**/ios/*.xcodeproj/xcuserdata/
 .trae/tmp/
 .trae/logs/
 # But preserve the BMAD rules
-!.trae/rules/
+.trae/rules/
 
 # --- OpenCode tool local state ---
 .opencode/
