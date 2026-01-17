@@ -53,11 +53,7 @@ apps/**/ios/*.xcodeproj/xcuserdata/
 *.p12
 
 # --- Trae (IDE local state) ---
-.trae/cache/
-.trae/tmp/
-.trae/logs/
-# But preserve the BMAD rules
-.trae/rules/
+.trae/
 
 # --- OpenCode tool local state ---
 .opencode/
