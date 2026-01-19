@@ -1,3 +1,29 @@
+# Language Protocol 
+
+To ensure efficiency and clarity for the development team, follow these language rules strictly:
+
+1.  **Thinking & Reasoning**: Use **Chinese (Simplified)** for all analysis and reasoning steps.
+2.  **Documentation Content**: Use **Chinese (Simplified)** for the *body content* of:
+    * `proposal.md` (Why, What Changes, Impact)
+    * `tasks.md` (Checklist items)
+    * `design.md` (Decisions, Context)
+    * `spec.md` (Requirement descriptions, Scenario steps)
+3.  **Strict English Structure**: The following **KEYWORDS and HEADERS must remain in English** for the `openspec` tool to parse correctly:
+    * `## ADDED Requirements`
+    * `## MODIFIED Requirements`
+    * `## REMOVED Requirements`
+    * `## RENAMED Requirements`
+    * `### Requirement: [Name]` (You can use Chinese for the Name part)
+    * `#### Scenario: [Name]` (You can use Chinese for the Name part)
+    * `## Why`, `## What Changes`, `## Impact` (In proposal.md)
+    * `## 1. Implementation` (In tasks.md)
+    * Keywords: `MUST`, `SHALL`, `WHEN`, `THEN`, `GIVEN`.
+4.  **Naming Conventions**:
+    * Filenames and directories: `kebab-case` (English), e.g., `add-user-login`.
+    * Code symbols (variables, functions): English.
+
+---
+
 # OpenSpec Instructions
 
 Instructions for AI coding assistants using OpenSpec for spec-driven development.
