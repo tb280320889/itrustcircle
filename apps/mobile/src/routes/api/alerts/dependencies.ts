@@ -23,16 +23,22 @@ let verifier: AuthVerifier = {
 
 let requestIdFactory = () => crypto.randomUUID();
 
-export function getAlertEventRepository() {
-	return repository;
+export type AlertEventRouteOverrides = {
+	repository?: AlertEventRepository;
+	verifier?: AuthVerifier;
+	requestIdFactory?: () => string;
+};
+
+export function getAlertEventRepository(overrides?: AlertEventRouteOverrides) {
+	return overrides?.repository ?? repository;
 }
 
-export function getAuthVerifier() {
-	return verifier;
+export function getAuthVerifier(overrides?: AlertEventRouteOverrides) {
+	return overrides?.verifier ?? verifier;
 }
 
-export function getRequestIdFactory() {
-	return requestIdFactory;
+export function getRequestIdFactory(overrides?: AlertEventRouteOverrides) {
+	return overrides?.requestIdFactory ?? requestIdFactory;
 }
 
 export function setRequestIdFactory(factory: () => string) {

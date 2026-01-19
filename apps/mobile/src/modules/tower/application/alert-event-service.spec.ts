@@ -182,8 +182,46 @@ describe('handleAlertEventRequest', () => {
 		expect(response.body).toEqual({
 			error: {
 				code: 'UNSUPPORTED_VERSION',
-				message: 'Unsupported api_version: 2.x',
+				message: 'Unsupported api_version: 2.x (supported: 1.x)',
 				request_id: 'req-8'
+			}
+		});
+	});
+
+	it('returns 400 when event_id not uuid v4', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, event_id: 'not-a-uuid' },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-9'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_PAYLOAD',
+				message: 'Invalid event_id format',
+				request_id: 'req-9'
+			}
+		});
+	});
+
+	it('returns 400 when sentinel_id empty', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, sentinel_id: '' },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-10'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_PAYLOAD',
+				message: 'Invalid sentinel_id value',
+				request_id: 'req-10'
 			}
 		});
 	});
@@ -195,7 +233,7 @@ describe('handleAlertEventRequest', () => {
 			body: { ...baseEvent, device_meta: meta },
 			repository: createRepository(),
 			verifier: createVerifier(),
-			requestIdFactory: () => 'req-9'
+			requestIdFactory: () => 'req-11'
 		});
 
 		expect(response.status).toBe(400);
@@ -203,26 +241,64 @@ describe('handleAlertEventRequest', () => {
 			error: {
 				code: 'MISSING_REQUIRED_FIELD',
 				message: 'Missing required field: device_meta.device_name',
-				request_id: 'req-9'
+				request_id: 'req-11'
 			}
 		});
 	});
 
-	it('returns 400 when timestamp type invalid', async () => {
+	it('returns 400 when device_meta.device_name type invalid', async () => {
 		const response = await handleAlertEventRequest({
 			headers: { authorization: 'Bearer valid-token' },
-			body: { ...baseEvent, timestamp: 'bad' },
+			body: { ...baseEvent, device_meta: { ...baseEvent.device_meta, device_name: 123 } },
 			repository: createRepository(),
 			verifier: createVerifier(),
-			requestIdFactory: () => 'req-10'
+			requestIdFactory: () => 'req-12'
 		});
 
 		expect(response.status).toBe(400);
 		expect(response.body).toEqual({
 			error: {
 				code: 'INVALID_FIELD_TYPE',
-				message: 'Invalid field type: timestamp',
-				request_id: 'req-10'
+				message: 'Invalid field type: device_meta.device_name',
+				request_id: 'req-12'
+			}
+		});
+	});
+
+	it('returns 400 when timestamp not integer', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, timestamp: 1704067200.5 },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-13'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_PAYLOAD',
+				message: 'Invalid timestamp value',
+				request_id: 'req-13'
+			}
+		});
+	});
+
+	it('returns 400 when cancelled_count not integer', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, cancelled_count: -1.5 },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-14'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_PAYLOAD',
+				message: 'Invalid cancelled_count value',
+				request_id: 'req-14'
 			}
 		});
 	});
@@ -233,7 +309,7 @@ describe('handleAlertEventRequest', () => {
 			body: { ...baseEvent, location: { latitude: 'bad' } },
 			repository: createRepository(),
 			verifier: createVerifier(),
-			requestIdFactory: () => 'req-11'
+			requestIdFactory: () => 'req-15'
 		});
 
 		expect(response.status).toBe(400);
@@ -241,7 +317,7 @@ describe('handleAlertEventRequest', () => {
 			error: {
 				code: 'INVALID_FIELD_TYPE',
 				message: 'Invalid field type: location',
-				request_id: 'req-11'
+				request_id: 'req-15'
 			}
 		});
 	});
