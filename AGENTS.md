@@ -38,6 +38,13 @@ Keep this managed block so 'openspec update' can refresh the instructions.
   split into multiple task cards and separate commits/PRs.
 - 默认禁止 worktree；只有在确实需要同时维护长期 hotfix + 主线变更、或需要保留 main 只读对照工作区时，才临时启用。
 
+## Git 环境检查（每次任务开始必须执行）
+- `git status`：确认工作区是否干净、是否有未提交内容
+- `git branch -vv`：确认当前分支与远端追踪关系
+- `git log -5 --oneline`：确认最近提交上下文
+- `git diff` / `git diff --stat`：确认变更范围可解释
+- 禁止在 `main/master` 上直接提交；必须在 change 分支上推进
+
 ## Directory boundaries
 - Web UI: `apps/mobile/src/` (SvelteKit)
 - Capacitor config + web output: `apps/mobile/capacitor.config.*`, `apps/mobile/build/`

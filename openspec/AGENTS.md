@@ -93,6 +93,9 @@ After deployment, create separate PR to:
 ## Before Any Task
 
 **Context Checklist:**
+- [ ] `git status` 确认工作区干净
+- [ ] `git branch -vv` 确认分支与远端追踪关系
+- [ ] `git log -5 --oneline` 确认最近提交上下文
 - [ ] Read relevant specs in `specs/[capability]/spec.md`
 - [ ] Check pending changes in `changes/` for conflicts
 - [ ] Read `openspec/project.md` for conventions

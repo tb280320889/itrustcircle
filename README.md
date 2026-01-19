@@ -60,3 +60,13 @@ Never edit copied web assets inside native projects. Always rebuild web then syn
 
 One task at a time (WIP=1)
 No cross-layer refactors in one change (split into multiple changes/commits)
+
+## Git workflow (LLM/Contributor)
+
+Start every task by checking:
+- `git status`
+- `git branch -vv`
+- `git log -5 --oneline`
+- `git diff --stat`
+
+Never commit directly on `main/master`; always work on a change branch (`feature/<change-id>` or `chore/<change-id>`).

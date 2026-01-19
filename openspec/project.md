@@ -114,15 +114,21 @@ MVP 聚焦：稳定、低心智、低功耗地跑通“断联 → 倒计时 → 
 
 ### Git Operating Procedure (for AI assistants)
 
-**Rule 0: Never commit on base branch**
+**Rule 0: Git 环境检查（每次任务开始必须执行）**
+- `git status`（确认工作区是否干净）
+- `git branch -vv`（确认当前分支与远端追踪关系）
+- `git log -5 --oneline`（确认最近提交上下文）
+- `git diff --stat`（确认当前变更范围）
+
+**Rule 1: Never commit on base branch**
 - 不要在 `main/master` 上直接 commit。每个 OpenSpec change 必须在 `feature/<change-id>` 或 `chore/<change-id>` 分支上推进。
 
-**Rule 1: Use path allow-list staging**
+**Rule 2: Use path allow-list staging**
 - Planning 阶段只允许 stage `openspec/**`。
 - 禁止默认 `git add -A`；优先白名单 add：
   - `git add openspec/AGENTS.md openspec/project.md openspec/changes/<change-id>`
 
-**Rule 2: Check before commit (MUST)**
+**Rule 3: Check before commit (MUST)**
 每次 commit 前必须确认：
 - `git status`（没有意外文件）
 - `git diff --stat`（变更范围符合当前阶段）
