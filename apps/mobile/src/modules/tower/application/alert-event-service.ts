@@ -38,6 +38,8 @@ const REQUIRED_FIELDS: Array<keyof AlertEvent> = [
 	'cancelled_count'
 ];
 
+const VERSION_PATTERN = /^\d+\.\d+$/;
+
 export async function handleAlertEventRequest({
 	headers,
 	body,
@@ -62,6 +64,25 @@ export async function handleAlertEventRequest({
 	}
 
 	const event = body as AlertEvent;
+
+	if (!VERSION_PATTERN.test(event.api_version)) {
+		return badRequest(requestId, 'INVALID_PAYLOAD', 'Invalid api_version format');
+	}
+
+	if (!event.api_version.startsWith('1.')) {
+		return badRequest(requestId, 'UNSUPPORTED_VERSION', `Unsupported api_version: ${event.api_version.split('.')[0]}.x`);
+	}
+
+	const typeError = validateFieldTypes(event);
+	if (typeError) {
+		return badRequest(requestId, 'INVALID_FIELD_TYPE', `Invalid field type: ${typeError}`);
+	}
+
+	const metaMissing = validateDeviceMeta(event.device_meta);
+	if (metaMissing) {
+		return badRequest(requestId, 'MISSING_REQUIRED_FIELD', `Missing required field: ${metaMissing}`);
+	}
+
 	if (event.trigger_reason !== 'ble_disconnect') {
 		return badRequest(requestId, 'INVALID_PAYLOAD', 'Invalid trigger_reason');
 	}
@@ -77,6 +98,39 @@ export async function handleAlertEventRequest({
 
 	await repository.saveEvent(event);
 	return ok({ result: 'created', request_id: requestId });
+}
+
+function validateFieldTypes(event: AlertEvent): string | null {
+	if (typeof event.api_version !== 'string') return 'api_version';
+	if (typeof event.event_id !== 'string') return 'event_id';
+	if (typeof event.sentinel_id !== 'string') return 'sentinel_id';
+	if (typeof event.tower_id !== 'string') return 'tower_id';
+	if (typeof event.profile_id !== 'string') return 'profile_id';
+	if (typeof event.timestamp !== 'number') return 'timestamp';
+	if (typeof event.trigger_reason !== 'string') return 'trigger_reason';
+	if (typeof event.cancelled_count !== 'number') return 'cancelled_count';
+	if (!event.device_meta || typeof event.device_meta !== 'object') return 'device_meta';
+	if (event.location !== undefined && !isValidLocation(event.location)) return 'location';
+	return null;
+}
+
+function validateDeviceMeta(deviceMeta: AlertEvent['device_meta']): string | null {
+	if (typeof deviceMeta.device_name !== 'string') return 'device_meta.device_name';
+	if (typeof deviceMeta.last_seen !== 'number') return 'device_meta.last_seen';
+	if (deviceMeta.rssi_last !== undefined && typeof deviceMeta.rssi_last !== 'number') {
+		return 'device_meta.rssi_last';
+	}
+	return null;
+}
+
+function isValidLocation(location: AlertEvent['location']): boolean {
+	if (!location || typeof location !== 'object') return false;
+	return (
+		typeof location.latitude === 'number' &&
+		typeof location.longitude === 'number' &&
+		typeof location.accuracy === 'number' &&
+		typeof location.timestamp === 'number'
+	);
 }
 
 function ok(body: AlertEventResult): AlertEventResponse {

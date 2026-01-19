@@ -149,4 +149,100 @@ describe('handleAlertEventRequest', () => {
 			}
 		});
 	});
+
+	it('returns 400 when api_version format invalid', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, api_version: '1' },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-7'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_PAYLOAD',
+				message: 'Invalid api_version format',
+				request_id: 'req-7'
+			}
+		});
+	});
+
+	it('returns 400 when api_version unsupported', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, api_version: '2.0' },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-8'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'UNSUPPORTED_VERSION',
+				message: 'Unsupported api_version: 2.x',
+				request_id: 'req-8'
+			}
+		});
+	});
+
+	it('returns 400 when device_meta missing device_name', async () => {
+		const { device_name: _deviceName, ...meta } = baseEvent.device_meta;
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, device_meta: meta },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-9'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'MISSING_REQUIRED_FIELD',
+				message: 'Missing required field: device_meta.device_name',
+				request_id: 'req-9'
+			}
+		});
+	});
+
+	it('returns 400 when timestamp type invalid', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, timestamp: 'bad' },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-10'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_FIELD_TYPE',
+				message: 'Invalid field type: timestamp',
+				request_id: 'req-10'
+			}
+		});
+	});
+
+	it('returns 400 when location field type invalid', async () => {
+		const response = await handleAlertEventRequest({
+			headers: { authorization: 'Bearer valid-token' },
+			body: { ...baseEvent, location: { latitude: 'bad' } },
+			repository: createRepository(),
+			verifier: createVerifier(),
+			requestIdFactory: () => 'req-11'
+		});
+
+		expect(response.status).toBe(400);
+		expect(response.body).toEqual({
+			error: {
+				code: 'INVALID_FIELD_TYPE',
+				message: 'Invalid field type: location',
+				request_id: 'req-11'
+			}
+		});
+	});
 });
