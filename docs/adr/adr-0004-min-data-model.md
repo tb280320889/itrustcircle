@@ -2,13 +2,13 @@
 
 ## 状态
 
-待定
+已定（参见 [openspec/specs/alert-event-contract/spec.md](../../openspec/specs/alert-event-contract/spec.md)）
 
 ## 背景
 
 PRD 要求 Sentinel 在 BLE 断联倒计时结束后生成最小 AlertEvent 并上报塔台。需要定义 AlertEvent 的核心字段集合，确保 Tower 能接收、存储并基于此触发通知，同时保持数据最小化原则。
 
-## 决策（待定）
+## 决策
 
 ### AlertEvent 最小字段集合
 
