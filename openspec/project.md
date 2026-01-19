@@ -195,6 +195,7 @@ Archive 的含义：
 - 已合并到 base 分支（或你明确认为已进入 current truth）
 
 归档动作（必须）：
+- Archive 必须使用 openspec archive <change-id> --yes，禁止手动 mv。归档后必须跑 openspec validate --all。
 - 运行：`openspec validate --strict --no-interactive` 确认全库一致
 
 

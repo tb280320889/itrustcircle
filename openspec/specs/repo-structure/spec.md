@@ -1,9 +1,8 @@
-# Specification: Repository Structure and Architectural Rules
+# repo-structure Specification
 
-> 除另有说明外，所有路径均相对于 `apps/mobile/src/`。
-
-## ADDED Requirements
-
+## Purpose
+TBD - created by archiving change refactor-architecture-step0-skeleton. Update Purpose after archive.
+## Requirements
 ### Requirement: Module-First Directory Structure
 代码库 MUST 按 `modules/` 下的业务能力组织模块，每个模块包含四层：`domain/`、`application/`、`infrastructure/` 和 `ui/`。此外，`shared/`、`platform/` 和 `aspects/` 目录 MUST 存在于同一层级用于横切关注点。
 
@@ -280,9 +279,3 @@ SvelteKit routes SHALL 作为处理 HTTP 关注点的薄壳。Routes MAY 解析�
 - 如果存在多种解释：在实现前请求澄清。
 - 如果规范缺少某功能类型的指导：更新规范并添加新规则（单独的变更提案）。
 
-## References
-
-- Related to: `project.md`（Module-first 架构模式、层定义）
-- Related to: `modules/sentinel/`、`modules/tower/`、`modules/contact/`（业务能力）
-- Related to: `platform/`（Capacitor/Android/iOS bridges）
-- Related to: `aspects/`（横切关注点）
