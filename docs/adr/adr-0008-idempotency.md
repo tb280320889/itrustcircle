@@ -2,7 +2,7 @@
 
 ## 状态
 
-待定
+已定（参见 [openspec/specs/alert-event-contract/spec.md](../../openspec/specs/alert-event-contract/spec.md)）
 
 ## 背景
 
@@ -14,7 +14,7 @@ PRD R4 要求弱网/断网场景下事件进入本地队列，网络恢复后自
 
 需要设计端到端的幂等和去重机制，确保 AlertEvent 的唯一性。
 
-## 决策（待定）
+## 决策
 
 ### 幂等策略设计
 
