@@ -1,4 +1,4 @@
-## MODIFIED Requirements
+## ADDED Requirements
 
 ### Requirement: AlertEvent 数据模型
 
@@ -103,7 +103,7 @@ Sentinel MUST 使用标准 HTTP 协议向 Tower 发送 AlertEvent，Tower MUST �
 }
 ```
 - **AND** `result` MUST 为 `created` 或 `duplicate`
-- **AND** Tower MUST 生成唯一的 `request_id` 并返回，用于请求追踪
+- **AND** `request_id` MUST 存在，用于请求追踪
 
 #### Scenario: 错误响应格式
 - **GIVEN** Tower 检测到请求错误
