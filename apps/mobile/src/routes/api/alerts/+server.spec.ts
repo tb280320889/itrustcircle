@@ -89,5 +89,41 @@ describe('POST /api/alerts', () => {
 
 		expect(response.status).toBe(400);
 		expect(body.error.code).toBe('INVALID_PAYLOAD');
+		expect(body.error.request_id).toBe('req-test');
+	});
+
+	it('returns 500 with standard error when repository fails', async () => {
+		const failingRequest = new Request('https://example.test/api/alerts', {
+			method: 'POST',
+			headers: {
+				Authorization: 'Bearer valid-token',
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(baseEvent)
+		});
+
+		const response = await POST(
+			{ request: failingRequest } as Parameters<typeof POST>[0],
+			{
+				repository: {
+					async hasEvent() {
+						throw new Error('db down');
+					},
+					async saveEvent() {
+						throw new Error('db down');
+					}
+				}
+			}
+		);
+		const body = await response.json();
+
+		expect(response.status).toBe(500);
+		expect(body).toEqual({
+			error: {
+				code: 'INTERNAL_ERROR',
+				message: 'Internal server error',
+				request_id: 'req-test'
+			}
+		});
 	});
 });
