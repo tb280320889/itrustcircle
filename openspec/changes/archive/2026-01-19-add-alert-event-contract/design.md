@@ -223,12 +223,6 @@
 - 传输层使用 HTTPS（生产环境强制）
 - Token 不在日志中明文输出（脱敏处理）
 
-#### Scenario: 认证失效处理
-- **GIVEN** Tower 返回 `401 Unauthorized` 或 `INVALID_AUTH`
-- **THEN** Sentinel MUST 视为不可恢复错误
-- **AND** MUST 停止自动重试
-- **AND** SHOULD 提示用户认证失效需重新配对
-
 **替代方案考虑**：
 - **方案 D**：在请求体中添加 `auth_token` 字段
   - 优点：无需处理 HTTP Header
