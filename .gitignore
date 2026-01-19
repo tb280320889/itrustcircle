@@ -2,8 +2,10 @@
 .DS_Store
 Thumbs.db
 .vscode/
+!.vscode/settings.json
 .idea/
 *.swp
+
 
 # --- AI / Tooling ---
 .claude/
@@ -55,8 +57,12 @@ apps/**/ios/*.xcodeproj/xcuserdata/
 # --- Trae (IDE local state) ---
 .trae/
 
+# --- Worktrees ---
+.worktrees/
+
 # --- OpenCode tool local state ---
 .opencode/
+
 
 # --- BMAD runtime scratch (if generated) ---
 _bmad/

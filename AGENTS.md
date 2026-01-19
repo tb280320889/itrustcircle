@@ -36,6 +36,7 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - WIP=1: Only work on ONE task card at a time. Do not start a second task until the current one is accepted.
 - No cross-layer refactors in one change. If changes touch more than one layer (UI(Web), Plugin(Bridge), Native(Android)),
   split into multiple task cards and separate commits/PRs.
+- 默认禁止 worktree；只有在确实需要同时维护长期 hotfix + 主线变更、或需要保留 main 只读对照工作区时，才临时启用。
 
 ## Directory boundaries
 - Web UI: `apps/mobile/src/` (SvelteKit)

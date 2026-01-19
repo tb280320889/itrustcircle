@@ -1,0 +1,29 @@
+{
+  "chatgpt.commentCodeLensEnabled": false,
+  "files.exclude": {
+    "**/.worktrees/**": true,
+    "**/.opencode/**": true,
+    "**/.ai/handbook/**": true,
+    "**/.ai/handbook.local/**": true,
+    "**/_bmad/**": true,
+    "**/node_modules/**": true,
+    "**/.svelte-kit/**": true,
+    "**/.pnpm-store/**": true,
+    "**/apps/**/android/build/**": true,
+    "**/apps/**/android/.gradle/**": true,
+    "**/apps/**/ios/Pods/**": true
+  },
+  "search.exclude": {
+    "**/.worktrees/**": true,
+    "**/.opencode/**": true,
+    "**/.ai/handbook/**": true,
+    "**/.ai/handbook.local/**": true,
+    "**/_bmad/**": true,
+    "**/node_modules/**": true,
+    "**/.svelte-kit/**": true,
+    "**/.pnpm-store/**": true,
+    "**/apps/**/android/build/**": true,
+    "**/apps/**/android/.gradle/**": true,
+    "**/apps/**/ios/Pods/**": true
+  }
+}

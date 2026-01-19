@@ -107,9 +107,10 @@ MVP 聚焦：稳定、低心智、低功耗地跑通“断联 → 倒计时 → 
   - 任务主题切换（结构 → 文档 → 规范 → 代码）
   - 需要明确回滚点
 
-### Optional: git worktree（按需）
-- 目的：让多个 change 的工作区物理隔离，减少 stash/switch 成本（不是强制要求）。
-- 仅建议在同时推进多个 change（哪怕只是 planning）或频繁切换时启用。
+### Optional: git worktree（默认禁止）
+- 默认禁止 worktree；只有在确实需要同时维护长期 hotfix + 主线变更、或需要保留 main 只读对照工作区时，才临时启用。
+- 启用时必须明确目的、时限与清理计划；完成后应及时删除 worktree。
+- 不得将 worktree 作为日常开发的默认方式。
 
 ### Git Operating Procedure (for AI assistants)
 
