@@ -91,7 +91,7 @@
 
 - 技术约束：apps/mobile（SvelteKit + Capacitor v7 Android）
 - 版本底线：Android API 23+
-- 当前 Sprint 0/1：允许只改 docs；但 PRD 的 Scope/Requirements 必须对应未来实现闭环
+- 当前阶段：允许只改 docs；但 PRD 的 Scope/Requirements 必须对应未来实现闭环
 
 ## 9. 开放问题（Open Questions）
 

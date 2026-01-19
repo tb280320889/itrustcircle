@@ -1,0 +1,13 @@
+#!/bin/sh
+# Pre-commit hook for docs-cleanliness guardrail
+# Runs on both Windows (Git Bash/WSL) and Unix systems
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+CHECK_SCRIPT="$SCRIPT_DIR/docs-cleanliness.ps1"
+
+if [ -f "$CHECK_SCRIPT" ]; then
+    exec pwsh -NoProfile -ExecutionPolicy Bypass -File "$CHECK_SCRIPT" "$@"
+else
+    echo "Warning: docs-cleanliness.ps1 not found at $CHECK_SCRIPT"
+    exit 0
+fi

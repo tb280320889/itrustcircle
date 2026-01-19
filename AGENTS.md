@@ -20,9 +20,12 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 # iTrustCircle - Agent Guidance
 
 ## Read this first (authoritative references)
-1) `README.md` (repo overview + how to run)
-2) `.rules` (agent/IDE constraints)
-3) `docs/` (PRD / ADR / Architecture / Acceptance — source of truth)
+
+1. `README.md` - repo overview and how to run
+2. `openspec/project.md` - project rules, workflow, architecture constraints
+3. `openspec/AGENTS.md` - AI conventions for OpenSpec-driven development
+4. `openspec/specs/**` - current truth for engineering behavior
+5. `docs/**` - product context and understanding aids
 
 ## Non-negotiables
 - Guardian Core reliability > UI. UI may crash; Guardian Core must keep running.
@@ -39,7 +42,7 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 - Capacitor config + web output: `apps/mobile/capacitor.config.*`, `apps/mobile/build/`
 - Android native: `apps/mobile/android/`
 - (Future) iOS: `apps/mobile/ios/`
-- Specs & decisions: `docs/` (must be updated when behavior/requirements change)
+- Specs & decisions: `openspec/` (must be updated when behavior/requirements change)
 
 ## Commands (prefer running from repo root)
 - Install: `pnpm -C apps/mobile install`
