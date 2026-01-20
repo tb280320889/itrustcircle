@@ -230,6 +230,7 @@ describe('handleAlertEventRequest', () => {
 		const { device_name: _deviceName, ...meta } = baseEvent.device_meta;
 		const response = await handleAlertEventRequest({
 			headers: { authorization: 'Bearer valid-token' },
+			// @ts-expect-error Testing missing required field
 			body: { ...baseEvent, device_meta: meta },
 			repository: createRepository(),
 			verifier: createVerifier(),
@@ -249,6 +250,7 @@ describe('handleAlertEventRequest', () => {
 	it('returns 400 when device_meta.device_name type invalid', async () => {
 		const response = await handleAlertEventRequest({
 			headers: { authorization: 'Bearer valid-token' },
+			// @ts-expect-error Testing invalid field type
 			body: { ...baseEvent, device_meta: { ...baseEvent.device_meta, device_name: 123 } },
 			repository: createRepository(),
 			verifier: createVerifier(),
@@ -306,6 +308,7 @@ describe('handleAlertEventRequest', () => {
 	it('returns 400 when location field type invalid', async () => {
 		const response = await handleAlertEventRequest({
 			headers: { authorization: 'Bearer valid-token' },
+			// @ts-expect-error Testing invalid field type
 			body: { ...baseEvent, location: { latitude: 'bad' } },
 			repository: createRepository(),
 			verifier: createVerifier(),

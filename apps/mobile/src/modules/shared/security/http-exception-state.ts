@@ -43,9 +43,14 @@ export function reconcileHttpExceptionOnNetworkChange({
 	let nextConfig = config;
 	const mustDisablePersisted =
 		config.enabled &&
-		(!trustedLan || policy.requiresReconfirm || policy.reason === 'NO_CONFIRMATION');
+		(!trustedLan ||
+			policy.requiresReconfirm ||
+			policy.reason === 'NO_CONFIRMATION' ||
+			policy.reason === 'CONFIRMATION_EXPIRED');
 
-	if (mustDisablePersisted || (!enabled && shouldReevaluate)) {
+	if (mustDisablePersisted) {
+		nextConfig = { enabled: false, confirmedAt: null };
+	} else if (!enabled && shouldReevaluate && (config.enabled || config.confirmedAt != null)) {
 		nextConfig = { enabled: false, confirmedAt: null };
 	}
 

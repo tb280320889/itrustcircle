@@ -32,7 +32,9 @@ describe('auth token lifecycle', () => {
 		const result = await lifecycle.clearPairing();
 
 		expect(result.status).toBe('blocked');
-		expect(result.error?.code).toBe('DELETE_FAILED');
-		expect(result.userMessage).toBeTruthy();
+		if (result.status === 'blocked') {
+			expect(result.error?.code).toBe('DELETE_FAILED');
+			expect(result.userMessage).toBeTruthy();
+		}
 	});
 });

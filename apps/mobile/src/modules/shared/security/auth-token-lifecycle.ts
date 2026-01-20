@@ -13,6 +13,24 @@ export type AuthTokenLifecycle = {
 
 const DEFAULT_USER_MESSAGE = 'Secure storage is unavailable. Check device security settings and retry.';
 
+function getUserMessage(error: unknown, defaultMsg: string): string {
+	if (error instanceof SecureTokenStoreError) {
+		switch (error.code) {
+			case 'UNAVAILABLE':
+				return 'Secure storage unavailable. Check device security settings or rebuild with native plugins.';
+			case 'READ_FAILED':
+				return 'Failed to read authentication token. Please retry.';
+			case 'WRITE_FAILED':
+				return 'Failed to save authentication token. Please retry.';
+			case 'DELETE_FAILED':
+				return 'Failed to remove authentication token. Please retry.';
+			default:
+				return `Secure storage error (${error.code}). Check device security settings.`;
+		}
+	}
+	return defaultMsg;
+}
+
 export function createAuthTokenLifecycle(store: SecureTokenStore): AuthTokenLifecycle {
 	return {
 		async recordPairing(token: string) {
@@ -20,7 +38,7 @@ export function createAuthTokenLifecycle(store: SecureTokenStore): AuthTokenLife
 				await store.setToken(token);
 				return { status: 'ready' };
 			} catch (error) {
-				return blocked(error, 'WRITE_FAILED', DEFAULT_USER_MESSAGE);
+				return blocked(error, 'WRITE_FAILED', getUserMessage(error, DEFAULT_USER_MESSAGE));
 			}
 		},
 		async rotateToken(token: string) {
@@ -28,7 +46,7 @@ export function createAuthTokenLifecycle(store: SecureTokenStore): AuthTokenLife
 				await store.setToken(token);
 				return { status: 'ready' };
 			} catch (error) {
-				return blocked(error, 'WRITE_FAILED', DEFAULT_USER_MESSAGE);
+				return blocked(error, 'WRITE_FAILED', getUserMessage(error, DEFAULT_USER_MESSAGE));
 			}
 		},
 		async clearPairing() {
@@ -36,7 +54,7 @@ export function createAuthTokenLifecycle(store: SecureTokenStore): AuthTokenLife
 				await store.deleteToken();
 				return { status: 'ready' };
 			} catch (error) {
-				return blocked(error, 'DELETE_FAILED', DEFAULT_USER_MESSAGE);
+				return blocked(error, 'DELETE_FAILED', getUserMessage(error, DEFAULT_USER_MESSAGE));
 			}
 		},
 		async clearCache() {
@@ -44,7 +62,7 @@ export function createAuthTokenLifecycle(store: SecureTokenStore): AuthTokenLife
 				await store.deleteToken();
 				return { status: 'ready' };
 			} catch (error) {
-				return blocked(error, 'DELETE_FAILED', DEFAULT_USER_MESSAGE);
+				return blocked(error, 'DELETE_FAILED', getUserMessage(error, DEFAULT_USER_MESSAGE));
 			}
 		}
 	};

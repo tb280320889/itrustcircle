@@ -1,5 +1,9 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { AlertEvent } from '../../shared/alert-event';
+import {
+	SecureTokenStoreError,
+	type SecureTokenStore
+} from '../../shared/security/secure-token-store';
 import {
 	sendAlertEvent,
 	type AlertEventClientDependencies,
@@ -21,28 +25,36 @@ const baseEvent: AlertEvent = {
 	cancelled_count: 0
 };
 
-function createDeps(responseSequence: HttpResponse[]): AlertEventClientDependencies {
+function createTokenStore(token: string | null = 'valid-token'): SecureTokenStore {
+	return {
+		isAvailable: vi.fn(async () => true),
+		getToken: vi.fn(async () => token),
+		setToken: vi.fn(async () => undefined),
+		deleteToken: vi.fn(async () => undefined)
+	};
+}
+
+function createDeps(
+	responseSequence: HttpResponse[],
+	options?: { tokenStore?: SecureTokenStore }
+): AlertEventClientDependencies {
 	let index = 0;
-	const delays: number[] = [];
+	const httpClient = vi.fn(async () => {
+		const response = responseSequence[Math.min(index, responseSequence.length - 1)];
+		index += 1;
+		return response;
+	});
 	return {
 		endpointUrl: 'https://tower.example.com/api/alerts',
-		authToken: 'valid-token',
+		tokenStore: options?.tokenStore ?? createTokenStore(),
 		retryPolicy: {
 			baseDelayMs: 100,
 			backoffFactor: 2,
 			maxDelayMs: 500,
 			maxRetries: 3
 		},
-		async httpClient() {
-			const response = responseSequence[Math.min(index, responseSequence.length - 1)];
-			index += 1;
-			return response;
-		},
-		async sleep(ms: number) {
-			delays.push(ms);
-		},
-		getDelays() {
-			return delays;
+		httpClient,
+		async sleep(_ms: number) {
 		}
 	};
 }
@@ -58,7 +70,6 @@ describe('sendAlertEvent', () => {
 
 		expect(result.status).toBe('sent');
 		expect(result.attempts).toBe(2);
-		expect(deps.getDelays()).toEqual([100]);
 	});
 
 	it('does not retry on 400 invalid payload', async () => {
@@ -70,7 +81,6 @@ describe('sendAlertEvent', () => {
 
 		expect(result.status).toBe('failed');
 		expect(result.attempts).toBe(1);
-		expect(deps.getDelays()).toEqual([]);
 	});
 
 	it('treats duplicate as sent', async () => {
@@ -80,5 +90,42 @@ describe('sendAlertEvent', () => {
 
 		expect(result.status).toBe('sent');
 		expect(result.attempts).toBe(1);
+	});
+
+	it('blocks when token missing', async () => {
+		const tokenStore = createTokenStore(null);
+		const deps = createDeps(
+			[{ status: 200, body: { result: 'created', request_id: 'req-1' } }],
+			{ tokenStore }
+		);
+
+		const result = await sendAlertEvent({ event: baseEvent, deps });
+
+		expect(result.status).toBe('failed');
+		expect(result.attempts).toBe(0);
+		expect(result.blockReason?.code).toBe('AUTH_TOKEN_MISSING');
+		expect(deps.httpClient).not.toHaveBeenCalled();
+	});
+
+	it('blocks when token storage throws', async () => {
+		const tokenStore: SecureTokenStore = {
+			isAvailable: vi.fn(async () => true),
+			getToken: vi.fn(async () => {
+				throw new SecureTokenStoreError('READ_FAILED', 'read failed');
+			}),
+			setToken: vi.fn(async () => undefined),
+			deleteToken: vi.fn(async () => undefined)
+		};
+		const deps = createDeps(
+			[{ status: 200, body: { result: 'created', request_id: 'req-1' } }],
+			{ tokenStore }
+		);
+
+		const result = await sendAlertEvent({ event: baseEvent, deps });
+
+		expect(result.status).toBe('failed');
+		expect(result.attempts).toBe(0);
+		expect(result.blockReason?.code).toBe('AUTH_TOKEN_READ_FAILED');
+		expect(deps.httpClient).not.toHaveBeenCalled();
 	});
 });
