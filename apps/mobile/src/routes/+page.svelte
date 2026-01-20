@@ -19,7 +19,7 @@
 	let deviceIp = $state('');
 	let config = $state<HttpExceptionConfig>(DEFAULT_HTTP_EXCEPTION_CONFIG);
 	let networkSnapshot = $state<NetworkSnapshot>({ connectionType: 'unknown' });
-	let state = $state<HttpExceptionState>({
+	let exceptionState = $state<HttpExceptionState>({
 		enabled: false,
 		trustedLan: false,
 		requiresReconfirm: false
@@ -28,15 +28,15 @@
 	let mounted = $state(false);
 
 	let trustedLabel = $derived(
-		state.trustedLan ? 'Trusted LAN confirmed' : 'Trusted LAN not confirmed'
+		exceptionState.trustedLan ? 'Trusted LAN confirmed' : 'Trusted LAN not confirmed'
 	);
 
 	let statusMessage = $derived.by(() => {
-		if (state.reason === 'UNTRUSTED_LAN') {
+		if (exceptionState.reason === 'UNTRUSTED_LAN') {
 			return 'HTTP exception disabled because the network is not trusted.';
-		} else if (state.reason === 'CONFIRMATION_EXPIRED') {
+		} else if (exceptionState.reason === 'CONFIRMATION_EXPIRED') {
 			return 'HTTP exception disabled because confirmation expired.';
-		} else if (state.reason === 'NO_CONFIRMATION') {
+		} else if (exceptionState.reason === 'NO_CONFIRMATION') {
 			return 'HTTP exception disabled until you confirm the risk again.';
 		}
 		return '';
@@ -72,7 +72,7 @@
 			forceReevaluate
 		});
 		networkSnapshot = nextSnapshot;
-		state = result.state;
+		exceptionState = result.state;
 
 		const configChanged =
 			config.enabled !== result.config.enabled || config.confirmedAt !== result.config.confirmedAt;
@@ -89,13 +89,13 @@
 		actionMessage = '';
 
 		if (checked) {
-			if (!state.trustedLan) {
+			if (!exceptionState.trustedLan) {
 				input.checked = false;
 				actionMessage =
 					'Connect to Wi-Fi and ensure Tower address resolves to an RFC1918 private IP. Providing device IP enables stricter verification.';
 				return;
 			}
-			const needsConfirm = state.requiresReconfirm || config.confirmedAt == null;
+			const needsConfirm = exceptionState.requiresReconfirm || config.confirmedAt == null;
 			let nextConfirmedAt = config.confirmedAt;
 
 			if (needsConfirm) {
@@ -109,7 +109,7 @@
 				nextConfirmedAt = Date.now();
 			}
 
-			// Update local state first to prevent UI flicker
+			// Update local exceptionState first to prevent UI flicker
 			config = { enabled: true, confirmedAt: nextConfirmedAt };
 			// Trigger reconciliation which handles persistence if changed
 			reconcile(networkSnapshot, true);
@@ -295,11 +295,11 @@
 			
 			<div class="flex items-center gap-4">
 				<span
-					class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider shadow-sm transition-colors duration-200 {state.trustedLan
+					class="inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider shadow-sm transition-colors duration-200 {exceptionState.trustedLan
 						? 'bg-[#d8f0d4] text-[#1f4b1d] ring-1 ring-[#1f4b1d]/10'
 						: 'bg-[#e8e0d5] text-[#6f5a45]'}"
 				>
-					{#if state.trustedLan}
+					{#if exceptionState.trustedLan}
 						<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
 					{/if}
 					{trustedLabel}
@@ -308,7 +308,7 @@
 				<label class="relative inline-flex cursor-pointer items-center">
 					<input
 						type="checkbox"
-						checked={state.enabled}
+						checked={exceptionState.enabled}
 						onchange={handleToggle}
 						class="peer sr-only"
 					/>
@@ -326,7 +326,7 @@
 			</div>
 		{/if}
 
-		{#if state.enabled}
+		{#if exceptionState.enabled}
 			<div class="flex items-start gap-3 rounded-xl border border-[#f2c4a0] bg-[#fff0e0] p-4 text-sm text-[#8a4a2a]">
 				<svg class="mt-0.5 shrink-0 text-[#b56338]" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
 				<p class="m-0 leading-relaxed font-medium">
@@ -385,8 +385,8 @@
 			
 			<div class="flex flex-col gap-1.5">
 				<span class="text-[10px] font-bold uppercase tracking-widest text-[#917a62]">HTTP Exception</span>
-				<span class="inline-flex w-fit items-center rounded-md px-2 py-0.5 text-xs font-medium {state.enabled ? 'bg-[#fff0e0] text-[#8a4a2a]' : 'bg-[#f0e4d3] text-[#6f5a45]'}">
-					{state.enabled ? 'Enabled' : 'Disabled'}
+				<span class="inline-flex w-fit items-center rounded-md px-2 py-0.5 text-xs font-medium {exceptionState.enabled ? 'bg-[#fff0e0] text-[#8a4a2a]' : 'bg-[#f0e4d3] text-[#6f5a45]'}">
+					{exceptionState.enabled ? 'Enabled' : 'Disabled'}
 				</span>
 			</div>
 			
