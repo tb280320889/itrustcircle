@@ -21,7 +21,7 @@ let verifier: AuthVerifier = {
 	}
 };
 
-let requestIdFactory = () => crypto.randomUUID();
+let requestIdFactory: () => string = () => crypto.randomUUID();
 
 export type AlertEventRouteOverrides = {
 	repository?: AlertEventRepository;

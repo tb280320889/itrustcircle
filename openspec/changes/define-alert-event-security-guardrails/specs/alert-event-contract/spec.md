@@ -41,3 +41,4 @@ Sentinel MUST 使用 Bearer Token 认证，Tower MUST 验证 Token 有效性并�
 - **WHEN** Sentinel 和 Tower 存储 `auth_token`
 - **THEN** MUST 加密存储（使用平台提供的安全存储 API）
 - **AND** 禁止明文存储或日志中输出
+- **AND** MUST 遵循 alert-event-security 的生命周期与脱敏要求

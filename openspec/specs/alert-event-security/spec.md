@@ -1,4 +1,10 @@
-## ADDED Requirements
+# alert-event-security Specification
+
+## Purpose
+
+定义 AlertEvent 认证信息安全存储、HTTP 例外传输与日志脱敏要求，确保 Sentinel 与 Tower 在安全边界内运行。
+
+## Requirements
 ### Requirement: 安全存储接口边界
 
 Sentinel 与 Tower MUST 通过统一接口访问安全存储，禁止绕过安全存储边界。

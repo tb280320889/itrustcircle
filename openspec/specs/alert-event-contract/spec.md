@@ -251,6 +251,7 @@ Sentinel MUST 使用 Bearer Token 认证，Tower MUST 验证 Token 有效性并�
 - **WHEN** Sentinel 发送 AlertEvent
 - **THEN** 请求头 MUST 包含 `Authorization: Bearer <auth_token>`
 - **AND** `auth_token` 为强随机生成的字符串（至少 256 bits）
+- **AND** `auth_token` MUST 使用 base64url(32 bytes) 编码（长度约 43 字符，不含 padding）
 
 #### Scenario: Token 验证
 - **WHEN** Tower 收到 AlertEvent
@@ -277,9 +278,10 @@ Sentinel MUST 使用 Bearer Token 认证，Tower MUST 验证 Token 有效性并�
 - **WHEN** Sentinel 向 Tower 发送 AlertEvent
 - **THEN** MAY 使用 HTTP
 - **AND** 必须由用户显式启用并在 UI 中显示风险警告
+- **AND** 可信局域网判定 MUST 与 alert-event-security 的定义保持一致
 
 #### Scenario: Token 安全存储
 - **WHEN** Sentinel 和 Tower 存储 `auth_token`
 - **THEN** MUST 加密存储（使用平台提供的安全存储 API）
 - **AND** 禁止明文存储或日志中输出
-
+- **AND** MUST 遵循 alert-event-security 的生命周期与脱敏要求

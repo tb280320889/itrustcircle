@@ -12,5 +12,8 @@
 			}
 		}
 	],
-	"tailwindStylesheet": "./src/routes/layout.css"
+	"tailwindStylesheet": "./src/routes/layout.css",
+	"eslintIntegration": true,
+	"mdc": true,
+	"parser": "markdown"
 }

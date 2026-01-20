@@ -4,10 +4,17 @@ import { render } from 'vitest-browser-svelte';
 import Page from './+page.svelte';
 
 describe('/+page.svelte', () => {
-	it('should render h1', async () => {
+	it('renders connection configuration and status', async () => {
 		render(Page);
 
-		const heading = page.getByRole('heading', { level: 1 });
-		await expect.element(heading).toBeInTheDocument();
+		const title = page.getByRole('heading', { level: 1 });
+		const configHeading = page.getByRole('heading', { name: 'Connection Configuration' });
+		const statusHeading = page.getByRole('heading', { name: 'Connection Status' });
+		const toggleLabel = page.getByText('Allow HTTP on trusted LAN');
+
+		await expect.element(title).toBeInTheDocument();
+		await expect.element(configHeading).toBeInTheDocument();
+		await expect.element(statusHeading).toBeInTheDocument();
+		await expect.element(toggleLabel).toBeInTheDocument();
 	});
 });
