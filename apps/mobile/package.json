@@ -22,7 +22,7 @@
 		"test:unit": "vitest",
 		"test": "pnpm run test:unit --run",
 		"test:server": "vitest --run --project server",
-		"test:client": "vitest --run --project client",
+		"test:client": "vitest --run --config vitest.client.config.ts",
 		"cap:sync": "pnpm build && pnpm exec cap sync",
 		"cap:android": "pnpm cap:sync && pnpm exec cap run android",
 		"cap:open:android": "pnpm exec cap open android"

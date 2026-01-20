@@ -1,7 +1,20 @@
 ## 1. Implementation
-- [ ] 1.1 选择安全存储落地方案并固化接口/边界（Keystore/Keychain/插件）(DoD: 明确接口名/文件路径/桥接方式)
-- [ ] 1.2 定义 auth_token 生命周期与失败策略（创建/更新/删除/不可用时处理）(DoD: 给出状态流转与阻断策略)
-- [ ] 1.3 增加 HTTP 例外开关与显式确认流程（默认禁用）(DoD: 说明开关保存位置与默认值、重启恢复策略)
-- [ ] 1.4 连接配置页/状态页的风险提示位置与文案规则 (DoD: 指定 UI 入口与提示文本强度)
-- [ ] 1.5 全链路日志脱敏规范（诊断导出/错误上报/调试日志）(DoD: `rg -n "auth_token"` 不得命中明文日志)
-- [ ] 1.6 补充最小验证步骤（检查脚本/手工步骤/抓包约束）(DoD: 至少 1 条脚本 + 1 条手工步骤，包含“网络切换触发重评估”)
+- [x] 1.1 选择安全存储落地方案并固化接口/边界（Keystore/Keychain/插件）(DoD: 明确接口名/文件路径/桥接方式)
+- [x] 1.2 定义 auth_token 生命周期与失败策略（创建/更新/删除/不可用时处理）(DoD: 给出状态流转与阻断策略)
+- [x] 1.3 增加 HTTP 例外开关与显式确认流程（默认禁用）(DoD: 说明开关保存位置与默认值、重启恢复策略)
+- [x] 1.4 连接配置页/状态页的风险提示位置与文案规则 (DoD: 指定 UI 入口与提示文本强度)
+- [x] 1.5 全链路日志脱敏规范（诊断导出/错误上报/调试日志）(DoD: `rg -n "auth_token"` 不得命中明文日志)
+- [x] 1.6 补充最小验证步骤（检查脚本/手工步骤/抓包约束）(DoD: 至少 1 条脚本 + 1 条手工步骤，包含“网络切换触发重评估”)
+- [x] 1.7 现状扫描：定位 auth_token 产生/读取/注入 Authorization/日志输出/诊断导出的位置（DoD: 列出关键文件路径与调用链，不改代码）
+- [x] 1.8 建立 SecureStorageBridge（TS 接口 + 可 mock 实现/封装层），作为 Android Keystore / iOS Keychain 的唯一访问入口（DoD: TS 编译通过；可在单测中替换）
+- [x] 1.9 实现 shared SecureTokenStore 接口：apps/mobile/src/modules/shared/security/secure-token-store.ts（isAvailable/getToken/setToken/deleteToken）（DoD: 接口与 types 完整、可被 sentinel/tower 引用）
+- [x] 1.10 实现 Sentinel SecureTokenStore：apps/mobile/src/modules/sentinel/infrastructure/secure-token-store.ts（DoD: 仅通过 SecureStorageBridge；失败路径返回可诊断错误）
+- [x] 1.11 实现 Tower SecureTokenStore：apps/mobile/src/modules/tower/infrastructure/secure-token-store.ts（DoD: 同上；路径符合 spec）
+- [x] 1.12 接入 token 生命周期：配对创建写入、重配覆盖、解绑删除、清缓存必清理（DoD: 对应入口都调用 set/delete；任一失败都阻断“可发送/已配对”并给出可操作提示）
+- [x] 1.13 统一 AlertEvent 发送链路：Authorization: Bearer <auth_token> 必须只从 SecureTokenStore 读取；读取失败必须阻断发送并提示（DoD: 不再存在任何明文 fallback）
+- [x] 1.14 实现 token_fingerprint：SHA-256(auth_token) 前 8 位 hex；全链路日志/诊断导出仅允许该 fingerprint（DoD: 增加公共脱敏函数；保证不会打印 Authorization/auth_token）
+- [x] 1.15 HTTP 例外配置持久化：http_exception_enabled / http_exception_confirmed_at（默认 false），重启恢复策略 + 24h 再确认（DoD: 重启/过期路径行为可复现）
+- [x] 1.16 可信局域网判定（MVP）：Wi-Fi + RFC1918 私网 IP（可选：加“可直连探测”）；不成立时自动禁用或阻断发送并提示（DoD: 判定函数可单测）
+- [x] 1.17 网络边界变化触发重评估：网络类型变化或本机 IP 变化触发；不成立则按“自动禁用/阻断”执行（DoD: Wi-Fi↔蜂窝切换可验证）
+- [x] 1.18 UI：连接配置页提供 HTTP 例外开关 + 首次启用二次确认弹窗；连接状态页常驻风险提示（DoD: 文案与位置符合 spec）
+- [x] 1.19 验证与防回归：运行最小单测（fingerprint/过期/判定）、执行 grep 检查（auth_token/Authorization 不得出现在日志/导出），并跑 openspec validate（DoD: 记录结果；UI 回归命令：`pnpm -C apps/mobile test:client -- "src/routes/page.svelte.spec.ts"`）
