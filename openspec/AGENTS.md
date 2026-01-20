@@ -1,29 +1,3 @@
-# Language Protocol 
-
-To ensure efficiency and clarity for the development team, follow these language rules strictly:
-
-1.  **Thinking & Reasoning**: Use **Chinese (Simplified)** for all analysis and reasoning steps.
-2.  **Documentation Content**: Use **Chinese (Simplified)** for the *body content* of:
-    * `proposal.md` (Why, What Changes, Impact)
-    * `tasks.md` (Checklist items)
-    * `design.md` (Decisions, Context)
-    * `spec.md` (Requirement descriptions, Scenario steps)
-3.  **Strict English Structure**: The following **KEYWORDS and HEADERS must remain in English** for the `openspec` tool to parse correctly:
-    * `## ADDED Requirements`
-    * `## MODIFIED Requirements`
-    * `## REMOVED Requirements`
-    * `## RENAMED Requirements`
-    * `### Requirement: [Name]` (You can use Chinese for the Name part)
-    * `#### Scenario: [Name]` (You can use Chinese for the Name part)
-    * `## Why`, `## What Changes`, `## Impact` (In proposal.md)
-    * `## 1. Implementation` (In tasks.md)
-    * Keywords: `MUST`, `SHALL`, `WHEN`, `THEN`, `GIVEN`.
-4.  **Naming Conventions**:
-    * Filenames and directories: `kebab-case` (English), e.g., `add-user-login`.
-    * Code symbols (variables, functions): English.
-
----
-
 # OpenSpec Instructions
 
 Instructions for AI coding assistants using OpenSpec for spec-driven development.
@@ -37,7 +11,6 @@ Instructions for AI coding assistants using OpenSpec for spec-driven development
 - Write deltas: use `## ADDED|MODIFIED|REMOVED|RENAMED Requirements`; include at least one `#### Scenario:` per requirement
 - Validate: `openspec validate [change-id] --strict --no-interactive` and fix issues
 - Request approval: Do not start implementation until proposal is approved
-- 默认禁止 worktree；只有在确实需要同时维护长期 hotfix + 主线变更、或需要保留 main 只读对照工作区时，才临时启用
 
 ## Three-Stage Workflow
 
@@ -93,9 +66,6 @@ After deployment, create separate PR to:
 ## Before Any Task
 
 **Context Checklist:**
-- [ ] `git status` 确认工作区干净
-- [ ] `git branch -vv` 确认分支与远端追踪关系
-- [ ] `git log -5 --oneline` 确认最近提交上下文
 - [ ] Read relevant specs in `specs/[capability]/spec.md`
 - [ ] Check pending changes in `changes/` for conflicts
 - [ ] Read `openspec/project.md` for conventions
@@ -484,3 +454,9 @@ openspec archive <change-id> [--yes|-y]  # Mark complete (add --yes for automati
 ```
 
 Remember: Specs are truth. Changes are proposals. Keep them in sync.
+
+---
+
+<!-- CUSTOM_PROMPTS_START -->
+> **自定义配置**：请同时阅读 `openspec/AGENTS.custom.md` 获取项目特定规则
+<!-- CUSTOM_PROMPTS_END -->
