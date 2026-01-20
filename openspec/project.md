@@ -18,6 +18,13 @@ MVP 聚焦：稳定、低心智、低功耗地跑通“断联 → 倒计时 → 
 
 ---
 
+## Reliability invariant (non-negotiable)
+
+**Guardian Core MUST NOT depend on WebView/UI or JS timers to stay alive.**
+
+- SvelteKit/Capacitor is the **control plane** (setup, status, diagnostics).
+- Safety-critical chain (monitoring/countdown/trigger/retry) MUST be runnable in **native core** (Android/iOS) with a thin bridge to TS UI.
+
 ## Project Conventions
 
 ### Code Style
@@ -27,6 +34,7 @@ MVP 聚焦：稳定、低心智、低功耗地跑通“断联 → 倒计时 → 
   - TS 标识符：camelCase / PascalCase
   - 常量：SCREAMING_SNAKE_CASE
 - 变更风格：小步提交、一次只做一件事；避免“顺手重构”跨层扩散（跨层必须单独开 change）。
+
 
 ### Architecture Patterns
 
