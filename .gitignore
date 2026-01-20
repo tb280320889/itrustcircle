@@ -66,3 +66,4 @@ apps/**/ios/*.xcodeproj/xcuserdata/
 
 # --- BMAD runtime scratch (if generated) ---
 _bmad/
+.shared/
