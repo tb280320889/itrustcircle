@@ -10,9 +10,12 @@ export function isTrustedLan({
 	network: NetworkSnapshot;
 	towerHost: string;
 }): boolean {
-	if (network.connectionType !== 'wifi') {
+	// Explicitly block cellular networks for HTTP exceptions.
+	// We allow 'wifi' and 'unknown' (common on desktop browsers) to proceed to IP-based verification.
+	if (network.connectionType === 'cellular') {
 		return false;
 	}
+
 	const towerIp = extractIpv4(towerHost);
 	if (!towerIp || !isPrivateIpv4(towerIp)) {
 		return false;
