@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import {
 		DEFAULT_HTTP_EXCEPTION_CONFIG,
 		createHttpExceptionConfigStore,
@@ -47,27 +47,27 @@
 	);
 
 	function readNetworkSnapshot(): NetworkSnapshot {
-		const connection = (
-			navigator as Navigator & { connection?: { type?: string; effectiveType?: string } }
-		).connection;
-		const rawType = connection?.type ?? connection?.effectiveType ?? 'unknown';
+		const nav = navigator as any;
+		const connection = nav.connection || nav.mozConnection || nav.webkitConnection;
+		const rawType = connection?.type || connection?.effectiveType || 'unknown';
 		const connectionType = normalizeConnectionType(rawType);
 		const ip = deviceIp.trim() || undefined;
 		return { connectionType, deviceIp: ip };
 	}
 
 	function normalizeConnectionType(rawType: string): NetworkSnapshot['connectionType'] {
-		if (rawType === 'wifi') return 'wifi';
-		if (['cellular', '2g', '3g', '4g', '5g'].includes(rawType)) return 'cellular';
+		const type = rawType.toLowerCase();
+		if (type === 'wifi' || type === 'ethernet') return 'wifi';
+		if (['cellular', '2g', '3g', '4g', '5g'].includes(type)) return 'cellular';
 		return 'unknown';
 	}
 
 	function reconcile(nextSnapshot: NetworkSnapshot, forceReevaluate = false) {
 		const result = reconcileHttpExceptionOnNetworkChange({
-			previous: networkSnapshot,
+			previous: untrack(() => networkSnapshot),
 			next: nextSnapshot,
-			towerHost,
-			config,
+			towerHost: untrack(() => towerHost),
+			config: untrack(() => config),
 			now: Date.now(),
 			forceReevaluate
 		});
@@ -75,11 +75,11 @@
 		exceptionState = result.state;
 
 		const configChanged =
-			config.enabled !== result.config.enabled || config.confirmedAt !== result.config.confirmedAt;
+			untrack(() => config.enabled) !== result.config.enabled ||
+			untrack(() => config.confirmedAt) !== result.config.confirmedAt;
 
 		if (configChanged) {
 			config = result.config;
-			void configStore.setConfig(result.config);
 		}
 	}
 
@@ -109,9 +109,8 @@
 				nextConfirmedAt = Date.now();
 			}
 
-			// Update local exceptionState first to prevent UI flicker
+			// Update config and reconcile
 			config = { enabled: true, confirmedAt: nextConfirmedAt };
-			// Trigger reconciliation which handles persistence if changed
 			reconcile(networkSnapshot, true);
 			return;
 		}
@@ -131,7 +130,6 @@
 
 			const snapshot = readNetworkSnapshot();
 			networkSnapshot = snapshot;
-			reconcile(snapshot, true);
 			mounted = true;
 		})();
 
@@ -158,6 +156,7 @@
 	});
 
 	$effect(() => {
+		// Persist settings
 		if (mounted) {
 			localStorage.setItem(STORAGE_TOWER_HOST_KEY, towerHost);
 			if (deviceIp.trim()) {
@@ -165,7 +164,18 @@
 			} else {
 				localStorage.removeItem(STORAGE_DEVICE_IP_KEY);
 			}
-			reconcile(readNetworkSnapshot(), true);
+			void configStore.setConfig(config);
+		}
+	});
+
+	$effect(() => {
+		// Re-reconcile on host/IP change
+		if (mounted) {
+			// Accessing these ensures tracking
+			const _h = towerHost;
+			const _i = deviceIp;
+			// Use untrack for the reconcile call itself to prevent it from tracking its own writes/other reads
+			untrack(() => reconcile(readNetworkSnapshot(), true));
 		}
 	});
 </script>
